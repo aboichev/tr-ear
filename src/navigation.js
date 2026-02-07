@@ -21,18 +21,19 @@ function updateDomOnActiveRouteChanged(newState) {
   // Update the DOM
   const activeRoute = newState.routes[newState.activeRouteIndex];
 
-  document.title = `${appStore.settings.state.name} - ${activeRoute.label}`;
+  document.title = `${appStore.settings.name} - ${activeRoute.label}`;
   document.getElementById('header').innerHTML = activeRoute.label;
+
   renderMenu(newState);
 }
 
 function triggerStateChange(path) {
-  const newIndex = appStore.ui.state.routes.findIndex(x => x.uri === path);
+  const newIndex = appStore.ui.routes.findIndex(x => x.uri === path);
   if (newIndex >= 0) {
-    appStore.ui.state.activeRouteIndex = newIndex;
+    appStore.ui.activeRouteIndex = newIndex;
   }
   else {
-    appStore.ui.state.activeRouteIndex = appStore.ui.state.routes.findIndex(x => x.uri === '/404');
+    appStore.ui.activeRouteIndex = appStore.ui.routes.findIndex(x => x.uri === '/404');
   }
 }
 
@@ -53,7 +54,7 @@ export function init() {
   // Attach nav handler, that will trigger state change
   navigation.addEventListener('navigate', handleNavEvent);
   // Subscribe dom update to state changes
-  appStore.ui.subscribe(updateDomOnActiveRouteChanged);
+  appStore.subscribe(updateDomOnActiveRouteChanged, (s) => s.ui);
   // Trigger the state change to manually when page loads
   triggerStateChange(window.location.pathname);
 }
